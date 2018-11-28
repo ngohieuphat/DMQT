@@ -1,13 +1,13 @@
 ﻿@model Web.Models.BangSanPham
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Thêm Sản Phẩm Mới";
 }
 
 <h2>Create</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm("Create", "BangSanPham", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     
@@ -17,17 +17,17 @@
         @Html.ValidationSummary(true)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.MaSP, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.MaSP, "MaSP", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.MaSP)
+                @Html.TextBoxFor(model => model.MaSP, new { @class = "from-control" })
                 @Html.ValidationMessageFor(model => model.MaSP)
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.TenSP, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.TenSP, "TenSP", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.TenSP)
+                @Html.TextBoxFor(model => model.TenSP, new { @class = "from-control" })
                 @Html.ValidationMessageFor(model => model.TenSP)
             </div>
         </div>
@@ -35,13 +35,13 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Loai_id, "Loai_id", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("Loai_id", String.Empty)
+                @Html.DropDownList("Loai_id", (IEnumerable<SelectListItem>)ViewData["Loai_id"], new { @class = "from-control" })
                 @Html.ValidationMessageFor(model => model.Loai_id)
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.GiaBan, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.GiaBan, "GiaBan", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.GiaBan)
                 @Html.ValidationMessageFor(model => model.GiaBan)
@@ -49,7 +49,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.GiaGoc, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.GiaGoc, "GiaGoc", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.GiaGoc)
                 @Html.ValidationMessageFor(model => model.GiaGoc)
@@ -57,7 +57,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.GiaGop, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.GiaGop, "GiaGop", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.GiaGop)
                 @Html.ValidationMessageFor(model => model.GiaGop)
@@ -65,10 +65,18 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.SoLuongTon, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.SoLuongTon, "SoLuongTon", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.SoLuongTon)
                 @Html.ValidationMessageFor(model => model.SoLuongTon)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("HinhAnh ", "Hinh San Pham ", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBox("HinhAnh", null, new { type = "file", onchange = "readURL(this);" })
+                @Html.ValidationMessage("HinhAnh")
+                <img id="HinhSP" src=""/>
             </div>
         </div>
 
@@ -78,6 +86,7 @@
             </div>
         </div>
     </div>
+    
 }
 
 <div>
@@ -86,4 +95,22 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#HinhSP')
+                    .attr('src', e.target.result)
+                    .width(150)
+                    .height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
 }
+ 

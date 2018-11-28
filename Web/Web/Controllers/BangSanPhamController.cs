@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Web.Models;
+using System.Transactions;
 
 namespace Web.Controllers
 {
@@ -48,17 +49,42 @@ namespace Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="id,MaSP,TenSP,Loai_id,GiaBan,GiaGoc,GiaGop,SoLuongTon")] BangSanPham bangsanpham)
+        public ActionResult Create([Bind(Include="id,MaSP,TenSP,Loai_id,GiaBan,GiaGoc,GiaGop,SoLuongTon")] BangSanPham model)
         {
+            CheckBangSanPham(model);
+
             if (ModelState.IsValid)
             {
-                db.BangSanPhams.Add(bangsanpham);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                using (var scope = new TransactionScope())
+                {
+                    db.BangSanPhams.Add(model);
+                    db.SaveChanges();
+                    var path = Server.MapPath("~/App_Data");
+                    path = path + "/" + model.id;
+                    if (Request.Files["HinhAnh"] != null && Request.Files["HinhAnh"].ContentLength > 0)
+                    {
+                        Request.Files["HinhAnh"].SaveAs(path);
+                        scope.Complete();//
+                        return RedirectToAction("Index");
+                    }
+
+                    return RedirectToAction("Index");
+
+                }
+                
             }
 
-            ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", bangsanpham.Loai_id);
-            return View(bangsanpham);
+            ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", model.Loai_id);
+            return View(model);
+        }
+        private void CheckBangSanPham(BangSanPham model)
+        {
+            if (model.GiaGoc < 0)
+                ModelState.AddModelError("GiaGoc","Gia Goc Lon Hon 0");
+            if (model.GiaBan < model.GiaGoc)
+                ModelState.AddModelError("GiBan","");
+            if (model.GiaGop < model.GiaGop)
+                ModelState.AddModelError("GiaGop", "Gia Gop Nho Hon Gia Goc");
         }
 
         // GET: /BangSanPham/Edit/5
