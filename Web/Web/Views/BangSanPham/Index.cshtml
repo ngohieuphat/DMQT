@@ -10,7 +10,7 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 
-<table id ="bangsanpham"class="table table-hover">
+<table id="bangsanpham" class="table table-hover">
     <thead>
         <tr>
             <th>
@@ -34,11 +34,16 @@
             <th>
                 TenLoai
             </th>
+            <th>HinhAnh</th>
+
+
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
             <tr>
                 <td>
                     @item.MaSP
@@ -62,24 +67,31 @@
                     @item.LoaiSanPham.TenLoai
                 </td>
                 <td>
+                    <img src="@Url.Action("Details", new { id = item.id})" width="150" height="100" />
+                </td>
 
-                  @Html.ActionLink("Edit", "Edit", new { id = item.id }) 
-                    @Html.ActionLink("Details", "Details", new { id=item.id }) 
-                    @Html.ActionLink("Delete", "Delete", new { id=item.id })
+                <td>
+
+                    <a href="@Url.Action("Edit",new{id = item.id})">
+                        <span class="glyphicon glyphicon-pencil"> |</span>
+                    </a>
+                    <a class="pull-right" href="@Url.Action("Delete",new{id=item.id})">
+                        <span class=" glyphicon glyphicon-trash"> |</span>
+                    </a>
                 </td>
             </tr>
-}
+        }
     </tbody>
 
 </table>
- @section scripts {
-     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+@section scripts {
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 
-<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-     <script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script>
      $(document).ready( function () {
     $('#bangsanpham').DataTable();
      } );
-     </script>
-    }
-    
+    </script>
+}
+
